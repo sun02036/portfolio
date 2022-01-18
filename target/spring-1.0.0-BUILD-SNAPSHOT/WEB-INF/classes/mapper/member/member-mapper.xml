@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+ 
+	<insert id="insertMember">
+		insert into 
+	    	member
+		values (
+		    #{id},
+		    #{password},
+		    #{name}, 
+		    #{gender}, 
+		    #{birthday}, 
+		    #{email}, 
+		    #{phone},
+		    #{address},
+		    #{hobby, typeHandler = stringArrayTypeHandler},
+		    default,
+		    default
+		)
+	</insert>
+	
+	<select id="selectOneMember" resultType="member">
+		select
+			*
+		from
+			member
+		where
+			id = #{id}
+	</select>
+	
+	<update id="updateMember">
+		update
+			member
+		set 
+			name = #{name}, 
+			birthday = #{birthday}, 
+			email = #{email}, 
+			phone = #{phone},
+			address = #{address},
+			hobby = #{hobby, typeHandler = stringArrayTypeHandler}
+		where 
+			id = #{id}
+	</update>
+	
+<!-- 	<select id="selectTotalMemberList" resultType="member"> -->
+<!-- 		select -->
+<!-- 			* -->
+<!-- 		from -->
+<!-- 			member -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectMemberList" resultType="member" parameterType="string">  -->
+<!-- 		<choose> -->
+<!-- 			<when test="_parameter != null"> -->
+<!-- 			select * from member where gender = #{_parameter} -->
+<!-- 			</when>			 -->
+<!-- 			<otherwise> -->
+<!-- 			select * from member -->
+<!-- 			</otherwise> -->
+<!-- 		</choose> -->
+<!-- 	</select> -->
+
+	<select id="selectMemberList" resultType="member">
+		select
+			*
+		from
+			member
+		<where>
+	   		 <if test="value != null and gender != ''">
+		   		 	gender = #{gender}
+	   		 </if>
+		</where>
+	</select>
+	
+<!-- 	<select id="findActiveBlogLike" resultType="Blog"> -->
+<!-- 		select  -->
+<!-- 			* -->
+<!-- 		from  -->
+<!-- 			blog -->
+<!-- 		where  -->
+<!-- 			state like 'ACTIVE' -->
+<!-- 		<choose> -->
+<!-- 		    <when test="title != null"> -->
+<!-- 		    	and title like '비교값' -->
+<!-- 		    </when> -->
+<!-- 		    <when test="author != null and author.name != null"> -->
+<!-- 		    	and author.name like '비교값' -->
+<!-- 		    </when> -->
+<!-- 		    <otherwise> -->
+<!-- 		    	and feature = 1 -->
+<!-- 		    </otherwise> -->
+<!-- 		</choose> -->
+<!-- 	</select> -->
+
+</mapper>

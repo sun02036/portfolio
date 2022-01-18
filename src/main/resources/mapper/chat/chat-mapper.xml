@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="chat">
+ 
+ <select id="findChatMemberByMemberId" resultType="chatMember">
+ 	select
+ 		*
+ 	from
+ 		chat_member
+ 	where
+ 		member_id = #{member_id}
+ </select>
+ 
+ <insert id="insertChatMember">
+ 	insert into
+ 		chat_member(chat_id, member_id)
+ 	values(
+ 		#{chatId},
+ 		#{memberId}
+ 	)
+ </insert>
+ 
+ <insert id="insertChatLog">
+ 	insert into
+ 		chat_log
+ 	values(
+	 	seq_chat_log_no.nextval,
+	 	#{chatId},
+	 	#{memberId},
+	 	#{msg},
+	 	#{logTime}
+ 	)
+ </insert>
+ 
+ <select id="findChatLogByChatId" resultType="chatLog">
+ 	select
+ 		*
+ 	from
+ 		chat_log
+ 	where
+ 		chat_id = #{chatId}
+ </select>
+ 
+ <select id="findChatLog" resultMap="chatLogMap">
+	select
+	    *
+	from 
+	    (
+        select
+	        cl.*,
+	        (select member_id from chat_member where chat_id = cl.chat_id and member_id != 'admin') mid,
+	        row_number() over(partition by chat_id order by no desc) rnum
+        from 
+       		chat_log cl
+	    ) cl
+	where
+	    rnum = 1
+	order by
+	    log_time desc
+ </select>
+ 
+ <resultMap type="chatLog" id="chatLogMap">
+ <id column="no" property="no"/>
+ <result column="chat_id" property="chatId"/>
+ <result column="member_id" property="memberId"/>
+ <result column="mid" property="memberId"/>
+ <result column="msg" property="msg"/>
+ <result column="log_time" property="logTime"/>
+ </resultMap>
+
+</mapper>
